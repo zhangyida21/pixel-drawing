@@ -58,5 +58,33 @@ h1 span{display:block;color:#9e7741}
     </div>
   </section>
 </main>
+
+<style>
+.music-toggle{position:fixed;right:24px;top:22px;z-index:10;display:flex;align-items:center;gap:9px;padding:11px 15px;border:1px solid rgba(255,248,228,.62);border-radius:999px;background:rgba(40,54,47,.84);color:#fff8e8;font:13px/1 Arial,sans-serif;letter-spacing:.04em;box-shadow:0 5px 20px rgba(38,40,30,.18);backdrop-filter:blur(8px);cursor:pointer}
+.music-toggle .note{font-size:17px;color:#e8cf98}.music-toggle.playing .note{animation:noteFloat 1.6s ease-in-out infinite alternate}
+@keyframes noteFloat{to{transform:translateY(-3px) rotate(10deg)}}
+@media(max-width:760px){.music-toggle{right:22px;top:20px}}
+</style>
+<audio id="bgMusic" src="background.mp3" autoplay loop preload="auto"></audio>
+<button class="music-toggle" id="musicToggle" type="button" aria-label="播放背景音乐"><span class="note">♫</span><span id="musicLabel">点击播放</span></button>
+<script>
+const music=document.getElementById('bgMusic');
+const toggle=document.getElementById('musicToggle');
+const label=document.getElementById('musicLabel');
+function updateMusicButton(){
+  const playing=!music.paused;
+  toggle.classList.toggle('playing',playing);
+  label.textContent=playing?'音乐播放中':'点击播放';
+  toggle.setAttribute('aria-label',playing?'暂停背景音乐':'播放背景音乐');
+}
+music.addEventListener('play',updateMusicButton);
+music.addEventListener('pause',updateMusicButton);
+toggle.addEventListener('click',async()=>{
+  if(music.paused){try{await music.play()}catch(e){label.textContent='无法播放'}}else{music.pause()}
+  updateMusicButton();
+});
+music.play().catch(()=>updateMusicButton());
+</script>
+
 </body>
 </html>
